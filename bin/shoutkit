@@ -1,0 +1,185 @@
+#!/usr/bin/env luajit
+--[[--
+Development harness for shoutkit.koplugin.
+
+Runs the directory client and the playback core outside KOReader, so the parts
+that are pure logic can be built and debugged on a desktop before anything is
+copied to a device. Everything it calls is the same code the plugin calls; only
+the UI differs.
+
+    bin/shoutkit search jazz --country US --limit 5
+    bin/shoutkit tags
+    bin/shoutkit play --tag "smooth jazz" --country US
+    bin/shoutkit play --url http://stream.live.vc.bbcmedia.co.uk/bbc_world_service
+
+Not shipped to devices -- it is a tool, not a feature.
+]]
+
+local here = arg[0]:match("^(.*)/bin/[^/]+$") or "."
+package.path = table.concat({
+    here .. "/shoutkit.koplugin/?.lua",
+    here .. "/shoutkit.koplugin/?/init.lua",
+    package.path,
+}, ";")
+
+local koaudio = require("koaudio")
+local Playlist = require("playlist")
+local RadioBrowser = require("directory.radiobrowser")
+
+math.randomseed(os.time())
+
+local function die(message)
+    io.stderr:write("shoutkit: ", message, "\n")
+    os.exit(1)
+end
+
+--- Parses "--key value" and "--flag" out of argv, leaving positionals.
+local function parse_args(argv)
+    local flags, positional = {}, {}
+    local index = 1
+    while index <= #argv do
+        local token = argv[index]
+        local key = token:match("^%-%-(.+)$")
+        if key then
+            local next_token = argv[index + 1]
+            if next_token and not next_token:match("^%-%-") then
+                flags[key] = next_token
+                index = index + 2
+            else
+                flags[key] = true
+                index = index + 1
+            end
+        else
+            positional[#positional + 1] = token
+            index = index + 1
+        end
+    end
+    return flags, positional
+end
+
+local flags, positional = parse_args({ select(2, unpack(arg, 0, #arg)) })
+local command = positional[1]
+
+local directory = RadioBrowser.new{
+    transport = flags.transport,
+    user_agent = "shoutkit.koplugin-dev/0.1.0",
+}
+
+local function search_from_flags(name)
+    return directory:search{
+        name = name,
+        tag = flags.tag,
+        countrycode = flags.country,
+        language = flags.language,
+        codec = flags.codec,
+        bitrate_min = tonumber(flags["bitrate-min"]),
+        order = flags.order,
+        limit = tonumber(flags.limit) or 10,
+    }
+end
+
+local function print_stations(stations)
+    for index, station in ipairs(stations) do
+        print(string.format("%2d. %s", index, station.name))
+        print(string.format("    %s", station:describe()))
+        print(string.format("    %s", station.url))
+    end
+end
+
+--- Blocks until the stream stops, printing state and ICY title changes.
+-- This is the loop KOReader replaces with a UIManager task.
+local function run_player(station_or_item)
+    local player = koaudio.Player.new{ volume = tonumber(flags.volume) or 60 }
+    if not player:is_usable() then die(player:unavailable_reason()) end
+    print("backend: " .. tostring(player.backend_name))
+
+    local item = station_or_item.to_item and station_or_item:to_item() or station_or_item
+    if station_or_item.uuid then
+        -- Courtesy to the directory, and it hands back the URL it prefers.
+        local preferred = directory:click(station_or_item.uuid)
+        if preferred then item.url = preferred end
+    end
+
+    local resolved, playlist_err = Playlist.resolve(item.url, directory.transport, {
+        is_hls = item.is_hls,
+    })
+    if resolved ~= item.url then
+        print("resolved playlist -> " .. resolved)
+        item.url = resolved
+    elseif playlist_err then
+        print("playlist note: " .. tostring(playlist_err))
+    end
+
+    print("playing: " .. tostring(item.title or item.url))
+    local last_line
+    player:subscribe(function(state, status)
+        local line = string.format("[%s] %s", state, status.title or "")
+        if status.codec and status.codec ~= "" then
+            line = line .. string.format("  (%s %sk)", status.codec, status.bitrate or "?")
+        end
+        if line ~= last_line then
+            print(line)
+            last_line = line
+        end
+    end)
+
+    local ok, err = player:play(item)
+    if not ok then die(tostring(err)) end
+
+    local seconds = tonumber(flags.seconds) or 30
+    for _ = 1, seconds do
+        os.execute("sleep 1")
+        local state = player:tick()
+        if state == "stopped" or state == "error" then break end
+    end
+    player:stop()
+    print("stopped")
+end
+
+if command == "search" then
+    local stations, err = search_from_flags(positional[2])
+    if not stations then die(tostring(err)) end
+    print(string.format("%d stations", #stations))
+    print_stations(stations)
+
+elseif command == "tags" then
+    local tags, err = directory:tags(tonumber(flags.limit) or 30)
+    if not tags then die(tostring(err)) end
+    for _, tag in ipairs(tags) do
+        print(string.format("%6d  %s", tag.count, tag.name))
+    end
+
+elseif command == "countries" then
+    local countries, err = directory:countries()
+    if not countries then die(tostring(err)) end
+    for _, country in ipairs(countries) do
+        print(string.format("%6d  %-4s %s", country.count, country.code or "?", country.name))
+    end
+
+elseif command == "mirrors" then
+    for _, mirror in ipairs(directory:mirrors()) do print(mirror) end
+
+elseif command == "backends" then
+    local _, name, rejections = koaudio.Detect.select()
+    print("platform: " .. koaudio.Detect.platform())
+    print("selected: " .. tostring(name or "(none)"))
+    for backend, reason in pairs(rejections) do
+        print(string.format("  %-10s %s", backend, reason))
+    end
+
+elseif command == "play" then
+    if flags.url then
+        run_player{ url = flags.url, title = flags.url, kind = "stream" }
+    else
+        local stations, err = search_from_flags(positional[2])
+        if not stations then die(tostring(err)) end
+        if #stations == 0 then die("no stations matched") end
+        run_player(stations[tonumber(flags.pick) or 1])
+    end
+
+else
+    print("usage: shoutkit <search|play|tags|countries|mirrors|backends> [query] [flags]")
+    print("flags: --tag --country --language --codec --bitrate-min --order --limit")
+    print("       --pick N --volume 0-100 --seconds N --url URL --transport curl|koreader")
+    os.exit(command and 1 or 0)
+end

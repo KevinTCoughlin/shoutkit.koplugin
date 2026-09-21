@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      # LuaJIT specifically: KOReader runs LuaJIT, and the plugin has to stay
+      # within 5.1 semantics. Testing against lua5.4 would hide breakage.
+      - name: Install LuaJIT
+        run: sudo apt-get update && sudo apt-get install -y luajit
+
+      - name: Syntax check
+        run: |
+          set -euo pipefail
+          failed=0
+          while IFS= read -r file; do
+            if ! luajit -bl "$file" /dev/null >/dev/null 2>&1; then
+              echo "::error file=$file::syntax error"
+              luajit -bl "$file" /dev/null 2>&1 | head -3
+              failed=1
+            fi
+          done < <(find shoutkit.koplugin spec -name '*.lua')
+          exit "$failed"
+
+      - name: Test
+        run: luajit spec/run.lua
+
+  # The directory client talks to a volunteer-run public API. A failure here
+  # means the API changed or a mirror is down -- worth knowing, never a reason
+  # to block a pull request.
+  live-directory:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v5
+      - run: sudo apt-get update && sudo apt-get install -y luajit
+      - name: Query the live Radio-Browser API
+        run: |
+          ./bin/shoutkit mirrors
+          ./bin/shoutkit search --tag jazz --limit 3

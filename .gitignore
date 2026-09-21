@@ -1,0 +1,12 @@
+# local dev artifacts
+*.log
+/tmp/
+/.shoutkit/
+/dist/
+*.zip
+
+# editor
+.DS_Store
+*.swp
+.vscode/
+.idea/
