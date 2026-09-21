@@ -11,6 +11,16 @@ implementation rather than forking the hard, device-specific part.
     player:play{ url = station.url, title = station.name, kind = "stream" }
     -- ... then call player:tick() from a UIManager task while the UI is up.
 
+**This aggregate is not usable from inside a KOReader plugin.** PluginLoader
+adds only "<plugin>/?.lua" to package.path (frontend/pluginloader.lua), never
+"?/init.lua", so `require("koaudio")` cannot resolve this directory on device.
+Plugin code must require the submodules directly:
+
+    local Player = require("koaudio.player")   -- resolves to koaudio/player.lua
+
+This file exists for the CLI harnesses and the test suite, which do put
+"?/init.lua" on the path.
+
 Canonical source: KevinTCoughlin/shoutkit.koplugin (shoutkit.koplugin/koaudio).
 Vendored elsewhere via git subtree -- edit it there, not in the copy.
 ]]
