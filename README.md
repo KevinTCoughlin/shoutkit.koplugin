@@ -63,6 +63,8 @@ Two seams carry the weight. **`koaudio`** is the audio abstraction: one state
 machine, many backends, defined by [docs/PROTOCOL.md](docs/PROTOCOL.md) and
 [docs/BACKENDS.md](docs/BACKENDS.md). It is the canonical copy — `podcast.koplugin`
 vendors this directory via `git subtree`, so edit it here, never in the copy.
+After changing anything under `koaudio/`, run `just publish-koaudio` to
+re-split it onto the `koaudio` branch that the other repo pulls from.
 **`transport`** is the HTTP seam, which is why the directory client has tests
 that never touch the network.
 

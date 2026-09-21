@@ -51,3 +51,14 @@ package:
 # Show which audio backend this machine would use
 backends:
     ./bin/shoutkit backends
+
+# Re-split koaudio onto the `koaudio` branch and push it.
+# Run this after ANY change under shoutkit.koplugin/koaudio/, otherwise
+# podcast.koplugin's `just vendor-koaudio` pulls a stale copy.
+publish-koaudio:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    git subtree split --prefix=shoutkit.koplugin/koaudio -b koaudio-tmp
+    git push --force origin koaudio-tmp:koaudio
+    git branch -D koaudio-tmp
+    echo "koaudio branch updated; run 'just vendor-koaudio' in podcast.koplugin"
