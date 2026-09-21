@@ -10,3 +10,6 @@
 *.swp
 .vscode/
 .idea/
+
+# emulator harness working directory (downloaded KOReader build)
+/.koreader-test/

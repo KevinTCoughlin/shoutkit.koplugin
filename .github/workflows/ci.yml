@@ -32,6 +32,31 @@ jobs:
       - name: Test
         run: luajit spec/run.lua
 
+  # Loads the plugin into a real KOReader release build and exercises every
+  # widget. Offline, so this hard-fails on a genuine API mistake -- which is the
+  # class of bug unit tests structurally cannot catch, since they never touch
+  # KOReader's frontend.
+  emulator:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+
+      # The KOReader build bundles its own Lua and most libraries, but links
+      # against the system SDL2; the dummy video driver needs no display.
+      - name: Install SDL2
+        run: sudo apt-get update && sudo apt-get install -y libsdl2-2.0-0
+
+      - name: Cache the KOReader build
+        uses: actions/cache@v4
+        with:
+          path: .koreader-test/koreader-*.tar.xz
+          key: koreader-v2026.07.1
+
+      - name: In-KOReader widget smoke test
+        run: SHOUTKIT_SMOKE_OFFLINE=1 ./tools/emulator.sh smoke
+
   # The directory client talks to a volunteer-run public API. A failure here
   # means the API changed or a mirror is down -- worth knowing, never a reason
   # to block a pull request.

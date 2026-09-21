@@ -9,11 +9,12 @@ and [radio-slate](https://github.com/KevinTCoughlin/radio-slate) (Linux
 desktop) — same idea, same directory, a platform with 300 ms screen refreshes
 and no speaker.
 
-> **Status: early.** The directory client and the playback core work and are
-> tested, and the whole path from search to sound is exercisable from a desktop
-> today via `bin/shoutkit`. The KOReader UI layer is written but **not yet run
-> in the emulator**, and only the mpv backend is implemented — so there is no
-> working build for Kindle, Kobo or Android yet. See [ROADMAP.md](ROADMAP.md).
+> **Status: early, but it runs.** The directory client, the playback core and
+> the KOReader UI all work and are tested — the UI against a real KOReader build
+> (`just emulator-smoke`, 18 checks including live HTTPS through KOReader's own
+> luasec). The gap is **audio backends**: only mpv is implemented, so on an
+> actual e-reader the menu loads and browsing works, but playing a station
+> reports that there is no usable backend. See [ROADMAP.md](ROADMAP.md).
 
 ## What works today
 
@@ -84,14 +85,24 @@ the directory's own `hls` flag, and there are tests pinning all three.
 
 ## Development
 
-Needs `luajit` and `mpv`. No luarocks, no KOReader checkout.
+Needs `luajit` and `mpv`. No luarocks, no KOReader checkout — `just emulator`
+downloads a real KOReader release build for you.
 
 ```sh
-just test        # 65 tests, dependency-free runner
-just check       # syntax-check every Lua file
+just test              # 65 unit tests, dependency-free runner
+just check             # syntax-check every Lua file
+just emulator-smoke    # load into real KOReader, assert 18 widget checks
+just emulator          # launch real KOReader to click around (Tools -> Radio)
 just cli search --tag jazz
-just install     # copy the plugin into a local KOReader
+just install-kobo      # copy onto a Kobo mounted as USB mass storage
 ```
+
+`just emulator-smoke` is the one that matters. Unit tests cannot catch a wrong
+KOReader API call, because they never load KOReader's frontend; the emulator
+harness instantiates the real widgets and fails on exactly that. It found the
+first one: `PluginLoader` puts only `<plugin>/?.lua` on `package.path` and never
+`?/init.lua`, so `require("koaudio")` can never resolve from inside a plugin —
+plugin code has to require the submodules directly.
 
 ## Installing on a device
 
@@ -101,9 +112,14 @@ Copy the inner `shoutkit.koplugin/` directory into KOReader's `plugins/`:
 cp -r shoutkit.koplugin /path/to/koreader/plugins/
 ```
 
-Then **Tools → Radio**. Only the mpv backend exists today, so on real e-reader
-hardware the menu will load and tell you there is no usable audio backend. That
-is the honest current state, not a bug.
+On Kobo that path is `.adds/koreader/plugins/` on the KOBOeReader partition,
+and `just install-kobo` finds it for you. The device exposes no storage until
+you tap **Connect** on its screen.
+
+Then **Tools → Radio**. Browsing by genre, country and name works over the
+device's Wi-Fi. Playing a station will report **"No audio backend on this
+device"** — only the mpv backend exists today, so that is the honest current
+state rather than a bug. [docs/BACKENDS.md](docs/BACKENDS.md) has the plan.
 
 ## Prior art
 

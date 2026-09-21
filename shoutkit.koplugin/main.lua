@@ -24,7 +24,11 @@ local UIManager = require("ui/uimanager")
 local logger = require("logger")
 local _ = require("gettext")
 
-local koaudio = require("koaudio")
+-- Submodules, not the `koaudio` aggregate: KOReader's PluginLoader puts only
+-- "<plugin>/?.lua" on package.path (pluginloader.lua), never "?/init.lua", so
+-- `require("koaudio")` cannot resolve the directory from inside a plugin.
+local Detect = require("koaudio.detect")
+local Player = require("koaudio.player")
 local Browse = require("ui/browse")
 local Config = require("config")
 local NowPlaying = require("ui/nowplaying")
@@ -49,7 +53,7 @@ end
 
 function ShoutKit:_get_player()
     if not self.player then
-        self.player = koaudio.Player.new{ volume = self.config:get("volume") }
+        self.player = Player.new{ volume = self.config:get("volume") }
     end
     return self.player
 end
@@ -167,13 +171,13 @@ function ShoutKit:addToMainMenu(menu_items)
             },
             {
                 text_func = function()
-                    local _p, name = koaudio.Detect.select()
+                    local _p, name = Detect.select()
                     return _("Audio backend: ") .. tostring(name or _("none"))
                 end,
                 keep_menu_open = true,
                 callback = function()
-                    local _p, name, rejections = koaudio.Detect.select()
-                    local lines = { _("Platform: ") .. koaudio.Detect.platform() }
+                    local _p, name, rejections = Detect.select()
+                    local lines = { _("Platform: ") .. Detect.platform() }
                     lines[#lines + 1] = _("Selected: ") .. tostring(name or _("none"))
                     for backend, reason in pairs(rejections) do
                         lines[#lines + 1] = backend .. ": " .. reason

@@ -52,9 +52,9 @@ package:
 backends:
     ./bin/shoutkit backends
 
-# Re-split koaudio onto the `koaudio` branch and push it.
 # Run this after ANY change under shoutkit.koplugin/koaudio/, otherwise
 # podcast.koplugin's `just vendor-koaudio` pulls a stale copy.
+# Re-split koaudio onto the `koaudio` branch and push it
 publish-koaudio:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -62,3 +62,16 @@ publish-koaudio:
     git push --force origin koaudio-tmp:koaudio
     git branch -D koaudio-tmp
     echo "koaudio branch updated; run 'just vendor-koaudio' in podcast.koplugin"
+
+# Headless (SDL dummy driver), so it works over SSH and in CI.
+# Load the plugin into a real KOReader and assert every widget step passes
+emulator-smoke:
+    ./tools/emulator.sh smoke
+
+# Launch a real KOReader with the plugin installed, to click around
+emulator:
+    ./tools/emulator.sh run
+
+# Copy the plugin onto a Kobo mounted as USB mass storage
+install-kobo:
+    ./tools/install-kobo.sh
