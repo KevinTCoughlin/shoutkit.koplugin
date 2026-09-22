@@ -45,8 +45,16 @@ else
 fi
 
 section "GStreamer plugin files"
-find / -name 'libgst*.so' 2>/dev/null | head -40
-echo "--- count: $(find / -name 'libgst*.so' 2>/dev/null | wc -l)"
+# Bounded on purpose: an unqualified `find /` also crawls /mnt/onboard, which is
+# tens of thousands of files on slow flash.
+GST_DIRS="/usr/lib /lib /usr/local/lib /usr/lib/gstreamer-1.0 /usr/local/lib/gstreamer-1.0"
+for d in $GST_DIRS; do
+    [ -d "$d" ] || continue
+    find "$d" -maxdepth 2 -name 'libgst*.so*' 2>/dev/null
+done | sort -u | head -60
+echo "--- total: $(for d in $GST_DIRS; do [ -d "$d" ] && find "$d" -maxdepth 2 -name 'libgst*.so*' 2>/dev/null; done | sort -u | wc -l)"
+echo "--- GST_PLUGIN_PATH=${GST_PLUGIN_PATH:-unset}"
+echo "--- registry: $(ls /usr/lib/gstreamer-1.0 2>/dev/null | wc -l) entries in /usr/lib/gstreamer-1.0"
 
 section "ALSA"
 cat /proc/asound/cards 2>/dev/null || echo "(no /proc/asound/cards)"
@@ -68,8 +76,13 @@ ls /var/lib/bluetooth 2>/dev/null || echo "(no /var/lib/bluetooth)"
 cat /etc/asound.conf 2>/dev/null || echo "(no /etc/asound.conf)"
 
 section "libs that matter"
-for l in libasound.so.2 libgstreamer-1.0.so.0 libssl.so libcrypto.so; do
-    found=$(find / -name "$l*" 2>/dev/null | head -1)
+for l in libasound.so.2 libgstreamer-1.0.so.0 libssl.so libcrypto.so libsbc.so; do
+    found=""
+    for d in /usr/lib /lib /usr/local/lib; do
+        [ -d "$d" ] || continue
+        found=$(find "$d" -maxdepth 2 -name "$l*" 2>/dev/null | head -1)
+        [ -n "$found" ] && break
+    done
     echo "  $l: ${found:-NO}"
 done
 

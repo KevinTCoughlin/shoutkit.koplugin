@@ -106,9 +106,20 @@ A sane order that avoids building everything at once:
 3. then i.MX6 via BlueALSA, the expensive one, which benefits from everything
    above it being settled first.
 
+Detecting which generation you are on is a one-liner: KOReader exposes
+**`Device:isMTK()`**, set per-model in `frontend/device/kobo/device.lua`. That
+is what `koaudio/detect.lua` should branch on — not the product id, and not
+crash.log.
+
 `tools/probe-kobo.sh` runs on the device and reports which of these applies:
 the framework, the sink element, the codec elements a stream needs, the ALSA
-state, and which Bluetooth daemon is running.
+state, and which Bluetooth daemon is running. Since a Kobo in USB mass storage
+mode has handed its disk to the host and is running nothing, the device has to
+run it itself: `tools/2-probe-audio.lua` is a one-shot KOReader user patch that
+does exactly that on next launch, writes the result to
+`/mnt/onboard/probe-kobo-output.txt`, and renames itself to `.done` so it never
+fires twice. Copy both to the device, launch KOReader, reconnect USB, read the
+file.
 
 ## Hardware reality
 
