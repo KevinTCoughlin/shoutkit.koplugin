@@ -95,6 +95,8 @@ just emulator-smoke    # load into real KOReader, assert 18 widget checks
 just emulator          # launch real KOReader to click around (Tools -> Radio)
 just cli search --tag jazz
 just install-kobo      # copy onto a Kobo mounted as USB mass storage
+                       # (reports the model; run tools/probe-kobo.sh on-device
+                       #  to see which audio route that model needs)
 ```
 
 `just emulator-smoke` is the one that matters. Unit tests cannot catch a wrong

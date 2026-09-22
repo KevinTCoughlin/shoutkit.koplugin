@@ -28,15 +28,31 @@ Ordered by what unblocks the most. Nothing here has a date.
       Wi-Fi power-down, and measure the battery cost honestly
 - [ ] Sleep timer, because falling asleep with the radio on is the actual use case
 
-## v0.4 — Kindle
+## v0.4 — GStreamer: MTK Kobo and Kindle
 
-- [ ] GStreamer backend, probing for `audioconvert`/`audioresample` rather than
-      just the binary
+One backend, two platforms. MTK Kobos (Clara Colour, Clara BW, Libra Colour)
+ship GStreamer with a proprietary `mtkbtmwrpcaudiosink`, which makes them much
+closer to Kindle than to an older Kobo — and much cheaper than the ALSA route
+this roadmap used to assume for all Kobos.
+
+- [ ] Run `tools/probe-kobo.sh` on a device and settle which elements exist
+- [ ] Local file → `playbin` → `mtkbtmwrpcaudiosink`, with orphaned-pipeline
+      cleanup via `/proc/net/unix` (the socket is exclusive)
+- [ ] Keepalive silence between items, or A2DP drops and eats the first second
+- [ ] Warn once about the MediaTek driver bug that can panic the kernel on
+      return to Nickel
+- [ ] Network streaming: the same pipeline with a URI
+- [ ] Kindle: the same backend with `alsasink`, probing for
+      `audioconvert`/`audioresample` rather than just the binary
 - [ ] Decide whether to reuse KinAMP's daemon instead of writing another one
 
-## v0.5 — Kobo
+## v0.5 — i.MX6 Kobo
 
-- [ ] ALSA backend, in the three stages in `docs/BACKENDS.md`
+The expensive one, and now clearly last: BlueZ devices (Libra 2, Sage, Clara 2E,
+Elipsa) have no media framework at all.
+
+- [ ] ALSA backend, in the stages in `docs/BACKENDS.md`
+- [ ] BlueALSA cross-build, leaning on audiobook.koplugin's recipes
 - [ ] Bluetooth pairing delegated to `kobo.koplugin` rather than reimplemented
 
 ## Later

@@ -1,13 +1,27 @@
 --[[--
-Kindle backend — NOT YET IMPLEMENTED.
+GStreamer backend — NOT YET IMPLEMENTED.
 
-Kindle firmware ships GStreamer (Amazon uses it for Audible and TTS), which
-means no audio stack has to be cross-compiled: a `playbin` pipeline handles the
-HTTP, the decode and the output. This is the route KinAMP takes.
+Covers **two** platforms, because both ship GStreamer in firmware and neither
+needs an audio stack cross-compiled:
 
-The intended pipeline, which streams Shoutcast/Icecast directly:
+  * **Kindle**, where Amazon uses it for Audible and TTS. Output is `alsasink`.
+    This is the route KinAMP takes.
+  * **MTK Kobos** (Clara Colour, Clara BW, Libra Colour — "Mark 12" and later),
+    where MediaTek ships a proprietary sink element, `mtkbtmwrpcaudiosink`,
+    wrapping their own Bluetooth stack. Those devices have no speaker and no
+    headphone jack, so that sink is the only output there is.
 
-    gst-launch-1.0 playbin uri=<url> audio-sink=alsasink
+The intended pipelines, which stream Shoutcast/Icecast directly:
+
+    gst-launch-1.0 playbin uri=<url> audio-sink=alsasink              # Kindle
+    gst-launch-1.0 playbin uri=<url> audio-sink=mtkbtmwrpcaudiosink   # MTK Kobo
+
+MTK adds three constraints Kindle does not have, all detailed in
+docs/BACKENDS.md: the `@kobo:mtkbtmwrpc` abstract socket is exclusive, so
+orphaned pipelines must be reaped via /proc/net/unix before starting; A2DP idles
+out in one to two seconds, so silence has to keep flowing between items; and
+returning to Nickel after using Bluetooth can panic the kernel, which the user
+deserves to be warned about once.
 
 Implementation notes for whoever picks this up:
   * The known failure mode is a *stripped* firmware GStreamer with no
@@ -21,8 +35,13 @@ Implementation notes for whoever picks this up:
   * ICY metadata is available via the `souphttpsrc` element's `iradio-mode`,
     but `gst-launch` cannot surface it -- which is exactly why KinAMP wrote its
     own ICY client instead.
-  * Bluetooth pairing on Kindle is a separate problem; KinAMP's `kinamp_bt.lua`
-    is the prior art.
+  * Bluetooth pairing is a separate problem on both platforms. KinAMP's
+    `kinamp_bt.lua` is the prior art for Kindle; for MTK Kobo it is
+    audiobook.koplugin's `btmanager.lua`, which drives MediaTek's D-Bus
+    interface at `com.kobo.mtk.bluedroid` rather than BlueZ's `org.bluez`.
+  * `tools/probe-kobo.sh` reports, on a given device, whether the sink element
+    and the codec elements a network stream needs are actually present. Run it
+    before writing any of this.
 ]]
 
 local Util = require("koaudio.util")
