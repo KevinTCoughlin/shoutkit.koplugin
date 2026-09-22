@@ -1,0 +1,146 @@
+shoutkit.koplugin Kobo audio probe
+date: Mon Sep 21 20:17:45 PDT 2026
+
+=== device ===
+N3675A8015808,4.9.77,4.46.23836,4.9.77,4.9.77,00000000-0000-0000-0000-000000000393PRODUCT=spaColour  MODEL_NUMBER=unset
+spaColour
+Linux kobo 4.9.77 #1 SMP PREEMPT e5649aba8-20251107T154948-B1107155140 armv7l GNU/Linux
+
+=== media frameworks ===
+gst-launch-1.0  yes: /bin/gst-launch-1.0
+gst-inspect-1.0 yes: /bin/gst-inspect-1.0
+ffmpeg          NO
+mpv             NO
+madplay         NO
+mpg123          yes: /bin/mpg123
+aplay           yes: /bin/aplay
+amixer          yes: /bin/amixer
+
+=== the MTK Bluetooth audio sink ===
+Factory Details:
+  Rank                     none (0)
+  Long-name                Bluedroid Audio Sink
+  Klass                    Audio/Sink
+  Description              Output audio to MTK Bluetooth Middleware RPC API
+  Author                   George Talusan <george.talusan@rakuten.com>
+
+Plugin Details:
+  Name                     mtkbtmwrpc
+  Description              Kobo's MTK Bluetooth Middleware RPC API plugin
+  Filename                 /lib/gstreamer-1.0/libgstmtkbtmwrpc.so
+  Version                  1.0.0
+--- elements a network stream needs:
+  playbin: yes
+  uridecodebin: yes
+  souphttpsrc: NO
+  curlhttpsrc: NO
+  mpegaudioparse: yes
+  mpg123audiodec: yes
+  avdec_mp3: NO
+  faad: NO
+  avdec_aac: NO
+  audioconvert: yes
+  audioresample: yes
+  alsasink: yes
+  autoaudiosink: yes
+
+=== GStreamer plugin files ===
+/lib/gstreamer-1.0/libgstadder.so
+/lib/gstreamer-1.0/libgstalsa.so
+/lib/gstreamer-1.0/libgstapp.so
+/lib/gstreamer-1.0/libgstaudioconvert.so
+/lib/gstreamer-1.0/libgstaudiofx.so
+/lib/gstreamer-1.0/libgstaudiomixer.so
+/lib/gstreamer-1.0/libgstaudioparsers.so
+/lib/gstreamer-1.0/libgstaudiorate.so
+/lib/gstreamer-1.0/libgstaudioresample.so
+/lib/gstreamer-1.0/libgstaudiotestsrc.so
+/lib/gstreamer-1.0/libgstautodetect.so
+/lib/gstreamer-1.0/libgstcoreelements.so
+/lib/gstreamer-1.0/libgstcoretracers.so
+/lib/gstreamer-1.0/libgstencoding.so
+/lib/gstreamer-1.0/libgstgio.so
+/lib/gstreamer-1.0/libgstid3demux.so
+/lib/gstreamer-1.0/libgstisomp4.so
+/lib/gstreamer-1.0/libgstmpg123.so
+/lib/gstreamer-1.0/libgstmtkbtmwrpc.so
+/lib/gstreamer-1.0/libgstpbtypes.so
+/lib/gstreamer-1.0/libgstplayback.so
+/lib/gstreamer-1.0/libgstrawparse.so
+/lib/gstreamer-1.0/libgstsubparse.so
+/lib/gstreamer-1.0/libgsttcp.so
+/lib/gstreamer-1.0/libgsttypefindfunctions.so
+/lib/gstreamer-1.0/libgstvideoconvert.so
+/lib/gstreamer-1.0/libgstvideorate.so
+/lib/gstreamer-1.0/libgstvideoscale.so
+/lib/gstreamer-1.0/libgstvideotestsrc.so
+/lib/gstreamer-1.0/libgstvolume.so
+/lib/gstreamer-1.0/libgstwavenc.so
+/lib/gstreamer-1.0/libgstwavparse.so
+/lib/libgstallocators-1.0.so
+/lib/libgstallocators-1.0.so.0
+/lib/libgstallocators-1.0.so.0.1404.0
+/lib/libgstapp-1.0.so
+/lib/libgstapp-1.0.so.0
+/lib/libgstapp-1.0.so.0.1404.0
+/lib/libgstaudio-1.0.so
+/lib/libgstaudio-1.0.so.0
+/lib/libgstaudio-1.0.so.0.1404.0
+/lib/libgstbase-1.0.so
+/lib/libgstbase-1.0.so.0
+/lib/libgstbase-1.0.so.0.1404.0
+/lib/libgstcheck-1.0.so
+/lib/libgstcheck-1.0.so.0
+/lib/libgstcheck-1.0.so.0.1404.0
+/lib/libgstcontroller-1.0.so
+/lib/libgstcontroller-1.0.so.0
+/lib/libgstcontroller-1.0.so.0.1404.0
+/lib/libgstfft-1.0.so
+/lib/libgstfft-1.0.so.0
+/lib/libgstfft-1.0.so.0.1404.0
+/lib/libgstnet-1.0.so
+/lib/libgstnet-1.0.so.0
+/lib/libgstnet-1.0.so.0.1404.0
+/lib/libgstpbutils-1.0.so
+/lib/libgstpbutils-1.0.so.0
+/lib/libgstpbutils-1.0.so.0.1404.0
+/lib/libgstreamer-1.0.so
+--- total: 80
+--- GST_PLUGIN_PATH=unset
+--- registry: 0 entries in /usr/lib/gstreamer-1.0
+
+=== ALSA ===
+--- no soundcards ---
+seq
+timer
+null
+    Discard all samples (playback) or generate zero samples (capture)
+
+=== Bluetooth stack ===
+bluetoothd NO
+bluetoothctl yes: /bin/bluetoothctl
+mtkbtd NO
+--- the exclusive MTK socket (holder = whoever owns BT audio):
+  (not present -- nothing holding it)
+--- hci devices:
+
+=== paired devices / audio config ===
+(no /var/lib/bluetooth)
+(no /etc/asound.conf)
+
+=== libs that matter ===
+  libasound.so.2: /lib/libasound.so.2
+  libgstreamer-1.0.so.0: /lib/libgstreamer-1.0.so.0.1404.0
+  libssl.so: /usr/lib/libssl.so.0.9.8
+  libcrypto.so: /usr/lib/libcrypto.so
+  libsbc.so: /lib/libsbc.so
+
+=== done ===
+Send this whole output back.
+
+=== KOReader's own view of this device ===
+model: Kobo_spaColour
+isKobo: true
+isMTK: true
+isSDL: false
+hasNaturalLight: true
