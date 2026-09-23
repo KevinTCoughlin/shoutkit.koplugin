@@ -87,6 +87,10 @@ local function platform()
     if not ok or not device then return "desktop" end
     if device.isKindle and device:isKindle() then return "kindle" end
     if device.isKobo and device:isKobo() then return "kobo" end
+    -- Named so the rejection message matches what Detect.platform() reports;
+    -- a user reading "mpv is the route on desktop" while the log says
+    -- platform=emulator has to work out for themselves that those agree.
+    if device.isEmulator and device:isEmulator() then return "emulator" end
     return "desktop"
 end
 
@@ -155,6 +159,19 @@ end
 
 --- Runs at plugin load on every device, so it has to be both cheap and honest.
 function GstBackend.is_available()
+    -- This backend exists for firmware that ships GStreamer and nothing better.
+    -- A desktop or the emulator usually has both this and mpv, and mpv is the
+    -- superior of the two everywhere it runs: real seeking through an IPC
+    -- channel, live volume, and ICY metadata, none of which gst-launch can do.
+    -- Without this gate, installing GStreamer on a dev machine silently
+    -- downgrades the reference backend. `KOAUDIO_BACKEND=gstreamer` still
+    -- forces it, which is how it gets exercised off-device.
+    local plat = platform()
+    if plat ~= "kindle" and plat ~= "kobo" then
+        return false, "the GStreamer backend is for Kindle and MTK Kobo; "
+            .. "mpv is the route on " .. plat
+    end
+
     if not Util.has_command("gst-launch-1.0") then
         return false, "gst-launch-1.0 not found"
     end
