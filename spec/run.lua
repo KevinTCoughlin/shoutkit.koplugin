@@ -24,6 +24,7 @@ local specs = {
     "playlist_spec",
     "radiobrowser_spec",
     "player_spec",
+    "gstreamer_spec",
 }
 
 for _, spec in ipairs(specs) do

@@ -21,6 +21,11 @@ check:
     done < <(find shoutkit.koplugin spec bin -name '*.lua' -o -path 'bin/shoutkit')
     [ "$failed" -eq 0 ] && echo "syntax ok"
 
+# Drive the GStreamer control script end to end against a real GStreamer.
+# Not part of `just test`: it needs GStreamer installed and takes a minute.
+gst-smoke:
+    ./tools/gst-smoke.sh
+
 # Run the dev harness, e.g. `just cli search --tag jazz`
 cli *ARGS:
     ./bin/shoutkit {{ARGS}}

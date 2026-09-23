@@ -46,15 +46,23 @@ this roadmap used to assume for all Kobos.
       below is blocked on this: under KOReader there is currently no Bluetooth
       daemon, and `mtkbtmwrpcaudiosink` reports success while playing to
       nothing.
-- [ ] Local file → decode chain → `mtkbtmwrpcaudiosink`, with stale-pipeline
-      cleanup (`/tmp/audio.a2dp_ctrl` plus a `ps`, not `/proc/net/unix`)
-- [ ] `is_available()` that checks the control socket rather than the sink,
+- [x] Local file → decode chain → sink, with stale-pipeline cleanup. Written as
+      `gst_control.sh` (the pipeline owner, since `gst-launch-1.0` has no
+      control channel) plus `koaudio/backends/gstreamer.lua`, and driven end to
+      end by `just gst-smoke` against a real GStreamer: play, pause, resume,
+      seek, stop, and no orphaned pipeline afterwards. **Unverified on the
+      device**, which needs the A2DP question answered first.
+- [x] `is_available()` that checks the control socket rather than the sink,
       since the sink never reports failure
 - [ ] Keepalive silence between items, or A2DP drops and eats the first second
 - [ ] Warn once about the MediaTek driver bug that can panic the kernel on
       return to Nickel
-- [ ] Network streaming: fetch above GStreamer, bytes into `fdsrc`, `queue2`
-      for buffering — a different design from the file case
+- [x] Network streaming: fetch above GStreamer, bytes into `fdsrc`, `queue2`
+      for buffering — a different design from the file case. Smoke-tested
+      against a local HTTP server; not yet against a real station on a device.
+- [ ] Decide what the UI does with a backend that cannot change volume live and
+      reports no track metadata — both are consequences of `gst-launch` having
+      no control channel, and the now-playing screen currently assumes neither
 - [ ] Filter the station list to MP3: there is no AAC decoder on the device
 - [ ] Kindle: the same backend with `alsasink`, probing for
       `audioconvert`/`audioresample` rather than just the binary

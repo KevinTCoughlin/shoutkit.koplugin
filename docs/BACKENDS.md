@@ -38,9 +38,9 @@ Two hard rules:
 |---|---|---|---|
 | `mpv` | desktop, KOReader emulator | **working** | mpv process + embedded Lua control script |
 | `android` | Android e-ink (Boox, …) | stub | `android.media.MediaPlayer` via JNI |
-| `gstreamer` | Kindle | stub | firmware `gst-launch-1.0 playbin` |
+| `gstreamer` | Kindle | **written, untested on hardware** | `gst_control.sh` + `alsasink` |
 | `alsa` | Kobo (i.MX6), PocketBook | stub | ALSA, + BlueALSA for A2DP, + a decoder |
-| `gstreamer` | Kobo (MTK) | stub | firmware GStreamer + `mtkbtmwrpcaudiosink` |
+| `gstreamer` | Kobo (MTK) | **written, blocked on A2DP** | `gst_control.sh` + `mtkbtmwrpcaudiosink` |
 | `null` | anywhere | working | reports everything, plays nothing (tests) |
 
 Probe order is `android → gstreamer → alsa → mpv`, set in `koaudio/detect.lua`.
