@@ -35,13 +35,27 @@ ship GStreamer with a proprietary `mtkbtmwrpcaudiosink`, which makes them much
 closer to Kindle than to an older Kobo — and much cheaper than the ALSA route
 this roadmap used to assume for all Kobos.
 
-- [ ] Run `tools/probe-kobo.sh` on a device and settle which elements exist
-- [ ] Local file → `playbin` → `mtkbtmwrpcaudiosink`, with orphaned-pipeline
-      cleanup via `/proc/net/unix` (the socket is exclusive)
+- [x] Run `tools/probe-kobo.sh` on a device and settle which elements exist
+- [x] Round two: settle which pipelines actually run. Local file and `fdsrc`
+      both decode; there is **no HTTP source element at all**, so `playbin
+      uri=http://…` is off the table and the fetch happens above GStreamer.
+      MP3 is the only codec. Results in `docs/probe-clara-colour-2.txt`.
+- [ ] **Round three, over SSH: the A2DP control socket.** With a speaker paired
+      from Nickel, does `/tmp/audio.a2dp_ctrl` exist while KOReader runs? If
+      not, which process provides it and can it be started alone? Everything
+      below is blocked on this: under KOReader there is currently no Bluetooth
+      daemon, and `mtkbtmwrpcaudiosink` reports success while playing to
+      nothing.
+- [ ] Local file → decode chain → `mtkbtmwrpcaudiosink`, with stale-pipeline
+      cleanup (`/tmp/audio.a2dp_ctrl` plus a `ps`, not `/proc/net/unix`)
+- [ ] `is_available()` that checks the control socket rather than the sink,
+      since the sink never reports failure
 - [ ] Keepalive silence between items, or A2DP drops and eats the first second
 - [ ] Warn once about the MediaTek driver bug that can panic the kernel on
       return to Nickel
-- [ ] Network streaming: the same pipeline with a URI
+- [ ] Network streaming: fetch above GStreamer, bytes into `fdsrc`, `queue2`
+      for buffering — a different design from the file case
+- [ ] Filter the station list to MP3: there is no AAC decoder on the device
 - [ ] Kindle: the same backend with `alsasink`, probing for
       `audioconvert`/`audioresample` rather than just the binary
 - [ ] Decide whether to reuse KinAMP's daemon instead of writing another one

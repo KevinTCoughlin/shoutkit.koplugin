@@ -1,0 +1,227 @@
+shoutkit.koplugin Kobo probe, round 2
+date: Mon Sep 21 21:56:25 PDT 2026
+
+=== every available GStreamer element ===
+adder adder
+alsa alsamidisrc
+alsa alsasink
+alsa alsasrc
+app appsink
+app appsrc
+audioconvert audioconvert
+audiofx audioamplify
+audiofx audiochebband
+audiofx audiocheblimit
+audiofx audiodynamic
+audiofx audioecho
+audiofx audiofirfilter
+audiofx audioiirfilter
+audiofx audioinvert
+audiofx audiokaraoke
+audiofx audiopanorama
+audiofx audiowsincband
+audiofx audiowsinclimit
+audiofx scaletempo
+audiomixer audiointerleave
+audiomixer audiomixer
+audiomixer liveadder
+audioparsers aacparse
+audioparsers ac3parse
+audioparsers amrparse
+audioparsers dcaparse
+audioparsers flacparse
+audioparsers mpegaudioparse
+audioparsers sbcparse
+audioparsers wavpackparse
+audiorate audiorate
+audioresample audioresample
+audiotestsrc audiotestsrc
+autodetect autoaudiosink
+autodetect autoaudiosrc
+autodetect autovideosink
+autodetect autovideosrc
+coreelements capsfilter
+coreelements concat
+coreelements dataurisrc
+coreelements downloadbuffer
+coreelements fakesink
+coreelements fakesrc
+coreelements fdsink
+coreelements fdsrc
+coreelements filesink
+coreelements filesrc
+coreelements funnel
+coreelements identity
+coreelements multiqueue
+coreelements queue
+coreelements queue2
+coreelements streamiddemux
+coreelements tee
+coreelements typefind
+coreelements valve
+encoding encodebin
+gio giosink
+gio giosrc
+gio giostreamsink
+gio giostreamsrc
+id3demux id3demux
+isomp4 3gppmux
+isomp4 ismlmux
+isomp4 mj2mux
+isomp4 mp4mux
+isomp4 qtdemux
+isomp4 qtmoovrecover
+isomp4 qtmux
+isomp4 rtpxqtdepay
+mpg123 mpg123audiodec
+mtkbtmwrpc mtkbtmwrpcaudiosink
+playback decodebin
+playback decodebin3
+playback parsebin
+playback playbin
+playback playbin3
+playback playsink
+playback streamsynchronizer
+playback subtitleoverlay
+playback uridecodebin
+playback uridecodebin3
+playback urisourcebin
+rawparse rawaudioparse
+rawparse rawvideoparse
+rawparse unalignedaudioparse
+rawparse unalignedvideoparse
+staticelements bin
+staticelements pipeline
+subparse ssaparse
+subparse subparse
+subparse subparse_typefind
+tcp multifdsink
+tcp multisocketsink
+tcp socketsrc
+tcp tcpclientsink
+tcp tcpclientsrc
+tcp tcpserversink
+tcp tcpserversrc
+videoconvert videoconvert
+videorate videorate
+videoscale videoscale
+videotestsrc videotestsrc
+volume volume
+wavenc wavenc
+wavparse wavparse
+--- element count: 249
+
+=== giosrc: can GIO fetch http at all? ===
+Factory Details:
+  Rank                     secondary (128)
+  Long-name                GIO source
+  Klass                    Source/File
+  Description              Read from any GIO-supported location
+  Author                   René Stadler <mail@renestadler.de>, Sebastian Dröge <sebastian.droege@collabora.co.uk>
+--- URI protocols giosrc claims:
+  Supported URI protocols:
+    file
+    resource
+
+
+=== TEST 1: local MP3 decode chain (no audio hardware needed) ===
+--- exit: 0
+
+=== TEST 2: fdsrc from a pipe (the 'KOReader does the HTTP' design) ===
+--- exit: 0
+
+=== TEST 3: giosrc over http (does the device need KOReader to do the HTTP?) ===
+ERROR: Pipeline doesn't want to pause.
+ERROR: from element /GstPipeline:pipeline0/GstGioSrc:giosrc0: Could not open resource for reading.
+Additional debug info:
+gstgiosrc.c(335): gst_gio_src_get_stream (): /GstPipeline:pipeline0/GstGioSrc:giosrc0:
+Could not open location http://stream.live.vc.bbcmedia.co.uk/bbc_world_service for reading: Operation not supported
+--- exit: 255
+
+=== TEST 4: playbin with an http uri (expected to fail: no http source) ===
+ERROR: Pipeline doesn't want to pause.
+ERROR: from element /GstURIDecodeBin:uridecodebin0: No URI handler implemented for "http".
+Additional debug info:
+gsturidecodebin.c(1409): gen_source_element (): /GstPlayBin:playbin0/GstURIDecodeBin:uridecodebin0
+--- exit: 255
+
+=== TEST 5: the MTK sink with nothing paired (capture the error shape) ===
+Setting pipeline to PAUSED ...
+Pipeline is PREROLLING ...
+Redistribute latency...
+Pipeline is PREROLLED ...
+Setting pipeline to PLAYING ...
+New clock: GstAudioSinkClock
+bt_a2dp_hw: adev_open_output_stream: opening output
+<04:56:26.041014> bt_sock_client: name /tmp//audio.a2dp_ctrl line:58
+bt_a2dp_hw: skt_connect: failed to connect (No such file or directory)
+<04:56:26.292629> bt_sock_client: name /tmp//audio.a2dp_ctrl line:58
+bt_a2dp_hw: skt_connect: failed to connect (No such file or directory)
+<04:56:26.543068> bt_sock_client: name /tmp//audio.a2dp_ctrl line:58
+bt_a2dp_hw: skt_connect: failed to connect (No such file or directory)
+<04:56:26.794659> bt_sock_client: name /tmp//audio.a2dp_ctrl line:58
+bt_a2dp_hw: skt_connect: failed to connect (No such file or directory)
+bt_a2dp_hw: adev_open_output_stream: ctrl socket failed to connect (No such file or directory)
+bt_a2dp_hw: adev_open_output_stream: success
+bt_a2dp_hw: out_set_parameters: state 3
+bt_a2dp_hw: out_set_parameters: state 3
+Got EOS from element "pipeline0".
+Execution ended after 0:00:04.551662308
+Setting pipeline to PAUSED ...
+bt_a2dp_hw: adev_close_output_stream: closing output (state 3)
+bt_a2dp_hw: adev_close_output_stream: closing output sleep 94000 us
+bt_a2dp_hw: adev_close_output_stream: done
+bt_a2dp_hw: adev_open_output_stream: opening output
+<04:56:30.653175> bt_sock_client: name /tmp//audio.a2dp_ctrl line:58
+bt_a2dp_hw: skt_connect: failed to connect (No such file or directory)
+<04:56:30.904095> bt_sock_client: name /tmp//audio.a2dp_ctrl line:58
+bt_a2dp_hw: skt_connect: failed to connect (No such file or directory)
+<04:56:31.155670> bt_sock_client: name /tmp//audio.a2dp_ctrl line:58
+bt_a2dp_hw: skt_connect: failed to connect (No such file or directory)
+<04:56:31.407252> bt_sock_client: name /tmp//audio.a2dp_ctrl line:58
+bt_a2dp_hw: skt_connect: failed to connect (No such file or directory)
+bt_a2dp_hw: adev_open_output_stream: ctrl socket failed to connect (No such file or directory)
+bt_a2dp_hw: adev_open_output_stream: success
+bt_a2dp_hw: out_set_parameters: state 3
+Setting pipeline to READY ...
+bt_a2dp_hw: adev_close_output_stream: closing output (state 3)
+bt_a2dp_hw: adev_close_output_stream: closing output sleep 94000 us
+bt_a2dp_hw: adev_close_output_stream: done
+bt_a2dp_hw: adev_open_output_stream: opening output
+<04:56:32.007528> bt_sock_client: name /tmp//audio.a2dp_ctrl line:58
+bt_a2dp_hw: skt_connect: failed to connect (No such file or directory)
+<04:56:32.259303> bt_sock_client: name /tmp//audio.a2dp_ctrl line:58
+bt_a2dp_hw: skt_connect: failed to connect (No such file or directory)
+<04:56:32.510888> bt_sock_client: name /tmp//audio.a2dp_ctrl line:58
+bt_a2dp_hw: skt_connect: failed to connect (No such file or directory)
+<04:56:32.762455> bt_sock_client: name /tmp//audio.a2dp_ctrl line:58
+bt_a2dp_hw: skt_connect: failed to connect (No such file or directory)
+bt_a2dp_hw: adev_open_output_stream: ctrl socket failed to connect (No such file or directory)
+bt_a2dp_hw: adev_open_output_stream: success
+bt_a2dp_hw: out_set_parameters: state 3
+Setting pipeline to NULL ...
+bt_a2dp_hw: out_set_parameters: state 3
+bt_a2dp_hw: adev_close_output_stream: closing output (state 3)
+bt_a2dp_hw: adev_close_output_stream: closing output sleep 94000 us
+bt_a2dp_hw: adev_close_output_stream: done
+Freeing pipeline ...
+--- exit: 0
+
+=== TEST 6: the exclusive socket, after all that ===
+  (not held)
+ 4697 root      0:00 timeout 20 gst-launch-1.0 filesrc location=/mnt/onboard/test.mp3 ! mpegaudioparse ! mpg123audiodec ! audioconvert ! audioresample ! audio/x-raw,format=S16LE,rate=48000,channels=2 ! mtkbtmwrpcaudiosink
+
+=== bluetooth, in more detail ===
+libgstmtkbtmwrpc.so
+libgstpbtypes.so
+--- rfkill / hci:
+  (no /sys/class/bluetooth)
+
+=== done ===
+
+=== KOReader's own view of this device ===
+model: Kobo_spaColour
+isKobo: true
+isMTK: true
+isSDL: false
+hasNaturalLight: true
