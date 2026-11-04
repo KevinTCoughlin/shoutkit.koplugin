@@ -33,7 +33,7 @@ UIManager:scheduleIn(1, function()
     local Config, Player, NullBackend, Browse, NowPlaying, Station
 
     step("require plugin modules", function()
-        Config = require("config")
+        Config = require("shoutkit_config")
         Player = require("koaudio.player")
         NullBackend = require("koaudio.backends.null")
         Browse = require("ui/browse")
