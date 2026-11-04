@@ -1,0 +1,265 @@
+shoutkit.koplugin Kobo probe, round 3
+date: Tue Sep 22 17:32:23 PDT 2026
+uptime: 192518.46 54398.61
+
+=== the socket itself ===
+  absent:  /tmp/audio.a2dp_ctrl
+  absent:  /tmp/audio.a2dp_data
+  absent:  /tmp/audio.a2dp_ctrl.sock
+--- everything socket-shaped in /tmp:
+srwxrwxrwx    1 root     root             0 Sep 20 12:03 dbus-F4sCASi3LC
+--- abstract sockets mentioning bt/a2dp/mtk:
+  (none)
+
+=== what is actually running ===
+PID   USER     TIME  COMMAND
+    1 root      0:00 init
+    2 root      0:00 [kthreadd]
+    3 root      0:00 [ksoftirqd/0]
+    5 root      0:00 [kworker/0:0H]
+    7 root      0:01 [rcu_preempt]
+    8 root      0:00 [rcu_sched]
+    9 root      0:00 [rcu_bh]
+   10 root      0:00 [migration/0]
+   11 root      0:00 [lru-add-drain]
+   12 root      0:00 [cpuhp/0]
+   13 root      0:00 [cpuhp/1]
+   14 root      0:00 [migration/1]
+   15 root      0:00 [ksoftirqd/1]
+   17 root      0:00 [kworker/1:0H]
+   18 root      0:00 [kdevtmpfs]
+   19 root      0:12 [kworker/u5:0]
+   20 root      0:00 [cmdq_buf_dump]
+   21 root      0:00 [cmdq_timeout_ha]
+   22 root      0:00 [oom_reaper]
+   23 root      0:00 [writeback]
+   24 root      0:00 [kcompactd0]
+   25 root      0:00 [crypto]
+   26 root      0:00 [bioset]
+   27 root      0:00 [kblockd]
+   28 root      0:00 [cmdq_auto_relea]
+   29 root      0:00 [cmdq_auto_relea]
+   30 root      0:00 [cmdq_auto_relea]
+   31 root      0:00 [cmdq_auto_relea]
+   32 root      0:00 [cmdq_auto_relea]
+   33 root      0:00 [cmdq_auto_relea]
+   34 root      0:00 [cmdq_auto_relea]
+   35 root      0:00 [cmdq_auto_relea]
+   36 root      0:00 [cmdq_auto_relea]
+   37 root      0:00 [cmdq_auto_relea]
+   38 root      0:00 [cmdq_auto_relea]
+   39 root      0:00 [cmdq_auto_relea]
+   40 root      0:00 [cmdq_auto_relea]
+   41 root      0:00 [cmdq_auto_relea]
+   42 root      0:00 [cmdq_auto_relea]
+   43 root      0:00 [cmdq_auto_relea]
+   44 root      0:00 [cmdq_resource]
+   45 root      0:00 [cmdq_mdp_task]
+   46 root      0:00 [devfreq_wq]
+   47 root      0:00 [kworker/1:1]
+   48 root      0:00 [cfg80211]
+   49 root      0:00 [watchdogd]
+   50 root      0:55 [cfinteractive]
+   59 root      0:00 [kswapd0]
+   60 root      0:00 [vmstat]
+   90 root      0:00 [hwrng]
+   91 root      0:00 [bioset]
+   92 root      0:00 [bioset]
+   93 root      0:00 [bioset]
+   94 root      0:00 [bioset]
+   95 root      0:00 [bioset]
+   96 root      0:00 [bioset]
+   97 root      0:00 [bioset]
+   98 root      0:00 [bioset]
+   99 root      0:00 [bioset]
+  100 root      0:00 [btif_rxd]
+  101 root      0:00 [kthermp]
+  102 root      0:00 [dfrc_make_polic]
+  103 root      0:00 [uether]
+  104 root      0:00 [uether_rx1]
+  105 root      0:00 [SY7636_INT]
+  106 root      0:00 [irq/90-bd71828_]
+  107 root      0:01 [irq/48-2-0024]
+  108 root      0:00 [kworker/1:2]
+  110 root      0:00 [mtk-ovl]
+  112 root      0:00 [mtk-ovl]
+  113 root      0:00 [mtk-wdma]
+  114 root      0:00 [mtk-mdp]
+  115 root      0:00 [mdp_wdt_wq]
+  119 root      0:00 [feeding_thread]
+  120 root      0:00 [dm_bufio_cache]
+  123 root      0:00 [ipv6_addrconf]
+  124 root      0:00 [power_down_mmsy]
+  125 root      0:00 [bioset]
+  126 root      0:00 [handle_pieline_]
+  127 root      0:14 [mmcqd/0]
+  128 root      0:00 [handle_wf_lut_d]
+  129 root      0:00 [bioset]
+  130 root      0:05 [dispatch_pipeli]
+  131 root      0:00 [mmcqd/0boot0]
+  132 root      0:04 [dispatch_mdp]
+  133 root      0:02 [irq/167-hwtcon]
+  134 root      0:33 [cfa_color_mappi]
+  135 root      0:00 [bioset]
+  136 root      0:00 [cfa_color_mappi]
+  137 root      0:00 [mmcqd/0boot1]
+  138 root      0:00 [bioset]
+  139 root      0:00 [mmcqd/0rpmb]
+  148 root      0:00 [mtk-imgrz]
+  149 root      0:00 [mtk-jdec]
+  150 root      0:00 [ksched_hint]
+  151 root      0:00 [power_fiti]
+  152 root      0:00 [touch_boost]
+  153 root      0:00 [mtk-tpd]
+  155 root      0:02 [kworker/0:1H]
+  156 root      0:00 [jbd2/mmcblk0p10]
+  157 root      0:00 [ext4-rsv-conver]
+  158 root      0:00 [kworker/1:1H]
+  210 root      0:07 /sbin/udevd -d
+  217 root      0:00 [jbd2/mmcblk0p8-]
+  218 root      0:00 [ext4-rsv-conver]
+  258 root      0:13 /usr/bin/mdpd -f
+  270 root      0:00 [usb_dr_workq]
+  279 root      0:09 [kworker/u5:1]
+  381 root      0:00 /bin/dbus-daemon --session --print-address --fork
+  382 messageb  0:00 /bin/dbus-daemon --system
+  389 root      0:00 {kobo_getty.sh} /bin/sh /sbin/kobo_getty.sh
+  391 root      0:00 /sbin/getty -L ttyS0 0 vt100
+  968 root      0:04 syslogd -C500 -S
+ 1045 root      0:02 /usr/bin/wmt_launcher -p /lib/firmware
+ 1047 root      0:00 [mtk_stp_psm]
+ 1048 root      0:00 [mtk_stp_btm]
+ 1052 root      0:00 [mtk_wmtd]
+ 1053 root      0:00 [mtk_wmtd_worker]
+ 1365 root      0:00 {koreader.sh} /bin/sh /tmp/koreader.sh
+ 1544 root      0:02 klogd
+ 8632 root      0:00 [kworker/u4:0]
+ 9186 root      0:00 [kworker/u4:2]
+ 9264 root      0:00 [kworker/0:3]
+ 9387 root      0:00 [kworker/0:1]
+ 9510 root      0:00 [kworker/0:2]
+ 9551 root      0:00 [kworker/0:0]
+ 9612 root      0:02 {reader.lua} ./luajit ./reader.lua
+ 9613 root      0:00 {reader.lua} ./luajit ./reader.lua
+ 9615 root      0:00 {reader.lua} ./luajit ./reader.lua
+ 9616 root      0:00 sh /mnt/onboard/probe-kobo-3.sh
+ 9622 root      0:00 ps
+--- is Nickel alive?
+  nickel: stopped (expected under KOReader)
+  hindenburg: stopped
+
+=== who owns the string 'a2dp_ctrl' ===
+  /usr/lib/libaudio.a2dp.default.so
+  /usr/lib/libbluetooth.default.so
+--- (a2dp anywhere in those dirs, for context):
+  /bin/bluealsa
+  /usr/bin/btservice
+  /lib/libsbc.so
+  /lib/libsbc.so.1
+  /lib/libsbc.so.1.2.2
+  /usr/lib/libaudio.a2dp.default.so
+  /usr/lib/libbluetooth.default.so
+  /usr/lib/libbt-mw.so
+  /usr/lib/libmtk_bt_ipcrpc_struct.so
+  /usr/lib/libmtk_bt_service_client.so
+  /usr/lib/libmtk_bt_service_server.so
+
+=== Bluetooth machinery on disk (running or not) ===
+  bluetoothd: NO
+  bluetoothctl: /bin/bluetoothctl
+  mtkbtd: NO
+  btmwrpc: NO
+  bt_audio: NO
+  btconfig: NO
+  hciconfig: /bin/hciconfig
+  hciattach: /sbin/hciattach
+  rfkill: NO
+  dbus-daemon: /bin/dbus-daemon
+  dbus-send: /bin/dbus-send
+--- anything bt-ish in the usual bins:
+bluetoothctl
+bt-obex
+btservice
+--- /etc/bluetooth, /usr/libexec/bluetooth:
+/etc/bluetooth:
+total 24
+drwxrwxr-x    2 3018     3018          4096 Sep 10 03:18 .
+drwx------   19 1000     1000          4096 Sep 13 12:14 ..
+-rw-rw-r--    1 3018     3018          2618 Aug 18 05:46 bt_did.conf
+-rw-rw-r--    1 3018     3018          4829 Aug 18 05:46 bt_stack.conf
+-rw-r--r--    1 root     root           193 Oct  2  2021 main.conf
+  (neither)
+--- kernel side:
+wmt_cdev_bt 16871 0 - Live 0xbf141000 (O)
+wmt_drv 1059215 4 wlan_drv_gen4m,wmt_cdev_bt,wmt_chrdev_wifi, Live 0xbf000000 (O)
+  (no /sys/class/bluetooth or rfkill)
+/dev/stpbt
+/dev/ttyS0
+/dev/ttyS1
+/dev/ttyS2
+  (no obvious BT tty)
+
+=== init: what starts it under Nickel ===
+ntx_check_regal_dev.sh
+on-animator.sh
+rcK
+rcS
+ssh
+update-animator.sh
+upgrade-b300-ntx.sh
+upgrade-generic.sh
+upgrade-mt8113t-ntx.sh
+upgrade-wifi.sh
+--- init scripts that mention bluetooth/bt/a2dp:
+/etc/init.d/rcS
+  (none)
+--- KOReader's own startup, which is what stopped Nickel:
+-rwxr-xr-x    1 root     root          3668 Jul 31 07:00 /mnt/onboard/.adds/koreader/disable-wifi.sh
+-rwxr-xr-x    1 root     root          8824 Jul 31 07:00 /mnt/onboard/.adds/koreader/enable-wifi.sh
+-rwxr-xr-x    1 root     root         31827 Jul 31 07:00 /mnt/onboard/.adds/koreader/koreader.sh
+-rwxr-xr-x    1 root     root          6590 Jul 31 07:00 /mnt/onboard/.adds/koreader/nickel.sh
+-rwxr-xr-x    1 root     root          2775 Jul 31 07:00 /mnt/onboard/.adds/koreader/obtain-ip.sh
+-rwxr-xr-x    1 root     root          1201 Jul 31 07:00 /mnt/onboard/.adds/koreader/release-ip.sh
+-rwxr-xr-x    1 root     root           818 Jul 31 07:00 /mnt/onboard/.adds/koreader/restore-wifi-async.sh
+166:if pkill -0 nickel; then
+169:# NOTE: Do not delete this line because KSM detects newer versions of KOReader by the presence of the phrase 'from_nickel'.
+189:        # Siphon a few things from nickel's env (namely, stuff exported by rcS *after* on-animator.sh has been launched)...
+191:        export $(grep -s -E -e '^(DBUS_SESSION_BUS_ADDRESS|NICKEL_HOME|WIFI_MODULE|LANG|INTERFACE)=' "/proc/$(pidof -s nickel)/environ")
+193:        #eval "$(awk -v 'RS="\0"' '/^(DBUS_SESSION_BUS_ADDRESS|NICKEL_HOME|WIFI_MODULE|LANG|INTERFACE)=/{gsub("\047", "\047\\\047\047"); print "export \047" $0 "\047"}' "/proc/$(pidof -s nickel)/environ")"
+212:    # Flush disks, might help avoid trashing nickel's DB...
+220:    killall -q -TERM nickel hindenburg sickel fickel strickel fontickel adobehost foxitpdf iink dhcpcd-dbus dhcpcd bluealsa bluetoothd fmon nanoclock.lua memorylogger QtWebEngineProcess
+224:    while pkill -0 nickel; do
+233:    rm -f /tmp/nickel-hardware-status
+266:# PLATFORM is used in koreader for the path to the Wi-Fi drivers (as well as when restarting nickel)
+634:                # KFMon asked us to restart nickel on exit (default since KFMon 0.9.5)
+635:                ./nickel.sh &
+642:            ./nickel.sh &
+647:        #       This might lead to false-positives if you use neither KSM nor advboot to launch KOReader *without nickel running*.
+
+=== D-Bus: the pairing interface audiobook.koplugin drives ===
+  system bus socket: present
+  (no matching bus names, or the call failed)
+
+=== HTTP clients, for the fetch that has to live above GStreamer ===
+  curl: NO
+  wget: /usr/bin/wget
+  nc: /usr/bin/nc
+  socat: NO
+  openssl: /usr/bin/openssl
+--- busybox applets, if any:
+[ [[ add-shell addgroup adduser adjtimex arch arp arping ash awk base64 basename bc blkdiscard blkid blockdev bootchartd brctl bunzip2 bzcat bzip2 cal cat chattr chgrp chmod chown chpasswd chpst chroot cksum clear cmp conspy cp cpio cryptpw cttyhack cut date dc dd delgroup deluser devmem df diff dirname dmesg dnsdomainname du echo ed egrep env envdir envuidgid expand expr factor fallocate false fatattr fbset fdflush fdformat fdisk fgrep find findfs flock fold free fsck fsfreeze fstrim fsync ftpd ftpget ftpput fuser getopt getty grep groups gunzip gzip halt hd head hexdump hexedit hostid hostname httpd hwclock i2cdetect i2cdump i2cget i2cset i2ctransfer id ifconfig ifdown ifenslave ifplugd ifup inetd init insmod ionice iostat ip ipaddr ipcalc ipcrm ipcs iplink ipneigh iproute iprule iptunnel kill killall killall5 klogd last less link linux32 linux64 linuxrc ln logger login logname logread losetup ls lsattr lsmod lsof lsscsi lzcat lzma lzop md5sum mesg mkdir mkdosfs mke2fs mkfifo mkfs.ext2 mkfs.vfat mknod mkpasswd mktemp more mount mountpoint mpstat mt mv nameif nc netstat nice nl nmeter nohup nologin nproc nsenter nslookup ntpd nuke od partprobe passwd paste patch pgrep pidof ping ping6 pipe_progress pivot_root pkill pmap poweroff powertop printenv printf ps pscan pstree pwd pwdx rdate rdev readahead readlink readprofile realpath reboot remove-shell renice reset resume rev rm rmdir rmmod route rtcwake run-init run-parts runlevel runsv runsvdir rx script scriptreplay sed seq setarch setfattr setpriv setserial setsid setuidgid sh sha1sum sha256sum sha3sum sha512sum shred shuf slattach sleep smemcap softlimit sort split ssl_client start-stop-daemon stat strings stty su sulogin sum sv svc svlogd svok swapoff swapon switch_root sync sysctl syslogd tac tail tar tc tcpsvd tee telnet telnetd test tftp tftpd time timeout top touch tr traceroute traceroute6 true truncate ts tty ttysize tunctl udhcpc udpsvd uevent umount uname unexpand uniq unlink unlzma unshare unxz unzip upti
+
+=== network (optional -- skipped when offline) ===
+--- addresses (this is the IP to put in ~/.ssh/config if SSH is up):
+--- is KOReader's SSH server listening?
+  nothing on 2222
+  no default route -- offline. Re-run this section with Wi-Fi up.
+
+=== done ===
+
+=== KOReader's own view of this device ===
+model: Kobo_spaColour
+isKobo: true
+isMTK: true
+isSDL: false
+hasNaturalLight: true
