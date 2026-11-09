@@ -1,5 +1,8 @@
 # local dev artifacts
 *.log
+# koaudio player state, written to the working directory when no runtime dir
+# (SHOUTKIT_RUNTIME_DIR, XDG_RUNTIME_DIR, TMPDIR) is set
+koaudio-mpv.*
 /tmp/
 /.shoutkit/
 /dist/
